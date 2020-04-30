@@ -9,19 +9,46 @@ namespace CertParser
     class Program
     {
         static byte[] rawCert;
-        static void Main(string[] args)
+        private static void InitialPrintOut(bool clear)
         {
-
-            Console.WriteLine("Welcome To Certificate Parser V1 :D");
             Console.WriteLine("==========================================");
-            Console.WriteLine("Now Please Enter Address of Certificate you want to parse:\r\n");
-            Console.Write("Address : ");
+            Console.WriteLine("Press 'R' To Create CSR ");
+            Console.WriteLine("Press 'P' To Parse a Certificate ");
+            if (clear)
+            {
+                Console.WriteLine("Press 'C' to Evaluate cert");
+            }
+        }
 
+        private static void ParsePrintOut(bool clear)
+        {
+            Console.WriteLine("===================================");
+            Console.WriteLine("Press 'P' to print cert");
+            Console.WriteLine("Press 'E' to Evaluate cert");
+            if (clear)
+            {
+                Console.WriteLine("Press 'C' to Evaluate cert");
+            }
+        }
+
+        private static string GetCleanPath()
+        {
             string certAddr = Console.ReadLine();
             if (certAddr[0] == '"' && certAddr[^1] == '"')
             {
                 certAddr = certAddr[1..^1];
             }
+            return certAddr;
+        }
+
+        private static void ParseCert()
+        {
+            Console.Clear();
+            Console.WriteLine("Now Please Enter Address of Certificate you want to parse:\r\n");
+            Console.Write("Address : ");
+
+            string certAddr = GetCleanPath();
+
             Uri uriResult;
             bool result = Uri.TryCreate(certAddr, UriKind.Absolute, out uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
@@ -38,13 +65,22 @@ namespace CertParser
             if (CertificateParser.Load(rawCert))
             {
                 Console.WriteLine("Certificate Loaded Successfully !");
-                Console.WriteLine("Press 'P' to print cert");
-                Console.WriteLine("Press 'E' to Evaluate cert");
+                Console.WriteLine("Do you have Any Extra Certificates ?(Y/N)");
+                var inputExt = Console.ReadKey();
+                if (inputExt.Key == ConsoleKey.Y)
+                {
+                    Console.WriteLine("Enter The Path Of Directory Containing Extra Certificates :");
+                    string extAddr = GetCleanPath();
+                }
+
+                ParsePrintOut(false);
+
                 while (true)
                 {
                     var key = Console.ReadKey();
-                    Console.WriteLine();
-                    Console.WriteLine("===================================");
+                    Console.Clear();
+                    //Console.WriteLine();
+                    //Console.WriteLine("===================================");
                     switch (key.Key)
                     {
                         case ConsoleKey.P:
@@ -58,16 +94,11 @@ namespace CertParser
                             Console.Clear();
                             break;
                         default:
-                            Console.WriteLine("===================================");
-                            Console.WriteLine("Press 'P' to print cert");
-                            Console.WriteLine("Press 'E' to Evaluate cert");
-                            Console.WriteLine("Press 'C' to Evaluate cert");
+                            ParsePrintOut(true);
                             break;
                     }
-                    Console.WriteLine("===================================");
-                    Console.WriteLine("Press 'P' to print cert");
-                    Console.WriteLine("Press 'E' to Evaluate cert");
-                    Console.WriteLine("Press 'C' to Evaluate cert");
+
+                    ParsePrintOut(true);
 
                 }
 
@@ -79,6 +110,34 @@ namespace CertParser
             }
 
             Console.ReadKey();
+        }
+
+        static void Main(string[] args)
+        {
+
+            Console.WriteLine("Welcome To Certificate Parser V1 :D");
+            InitialPrintOut(false);
+
+            while (true)
+            {
+                var input = Console.ReadKey();
+                switch (input.Key)
+                {
+                    case ConsoleKey.R:
+                        {
+                            break;
+                        }
+                    case ConsoleKey.P:
+                        {
+                            ParseCert();
+                            break;
+                        }
+                    default:
+                        InitialPrintOut(true);
+                        break;
+                }
+                
+            }
         }
     }
 }

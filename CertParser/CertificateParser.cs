@@ -10,12 +10,26 @@ namespace CertParser
     {
 
         public static X509Certificate2 certificate;
+        private static X509Certificate2Collection x509Certificate2Collection;
+
+        public static void AddExtraCerts(List<byte[]> extraCerts)
+        {
+            x509Certificate2Collection = new X509Certificate2Collection();
+            extraCerts.ForEach((cert) =>
+            {
+                x509Certificate2Collection.Add(new X509Certificate2(cert));
+            });
+        }
 
         private static X509ChainStatus[] BuildChain(X509Certificate2 cert)
         {
             X509Chain chain = new X509Chain();
             try
             {
+                if (x509Certificate2Collection.Count > 0)
+                {
+                    chain.ChainPolicy.ExtraStore.AddRange(x509Certificate2Collection);
+                }
                 chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
                 var chainBuilt = chain.Build(cert);
                 return chain.ChainStatus;
