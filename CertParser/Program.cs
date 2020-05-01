@@ -2,6 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CertParser
@@ -16,7 +17,7 @@ namespace CertParser
             Console.WriteLine("Press 'P' To Parse a Certificate ");
             if (clear)
             {
-                Console.WriteLine("Press 'C' to Evaluate cert");
+                Console.WriteLine("Press 'C' to Clear Console");
             }
         }
 
@@ -27,7 +28,7 @@ namespace CertParser
             Console.WriteLine("Press 'E' to Evaluate cert");
             if (clear)
             {
-                Console.WriteLine("Press 'C' to Evaluate cert");
+                Console.WriteLine("Press 'C' to Clear Console");
             }
         }
 
@@ -71,6 +72,7 @@ namespace CertParser
                 {
                     Console.WriteLine("Enter The Path Of Directory Containing Extra Certificates :");
                     string extAddr = GetCleanPath();
+                    CertificateParser.AddExtraCerts(FileHandler.GetExtraCertRawData(extAddr));
                 }
 
                 ParsePrintOut(false);
@@ -101,8 +103,6 @@ namespace CertParser
                     ParsePrintOut(true);
 
                 }
-
-
             }
             else
             {
@@ -111,6 +111,8 @@ namespace CertParser
 
             Console.ReadKey();
         }
+
+
 
         static void Main(string[] args)
         {
@@ -125,6 +127,11 @@ namespace CertParser
                 {
                     case ConsoleKey.R:
                         {
+                            string DN = CSR.RequestCertificate();
+                            string CSRstring = CSR.CreateCSR(DN);
+                            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "//csr.csr", CSRstring);
+                            Console.WriteLine($"CSR Created! at : {AppDomain.CurrentDomain.BaseDirectory + "\csr.csr"}");
+                            InitialPrintOut(true);
                             break;
                         }
                     case ConsoleKey.P:
@@ -136,7 +143,7 @@ namespace CertParser
                         InitialPrintOut(true);
                         break;
                 }
-                
+
             }
         }
     }

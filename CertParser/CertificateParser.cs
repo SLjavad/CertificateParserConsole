@@ -10,11 +10,10 @@ namespace CertParser
     {
 
         public static X509Certificate2 certificate;
-        private static X509Certificate2Collection x509Certificate2Collection;
+        private static X509Certificate2Collection x509Certificate2Collection = new X509Certificate2Collection();
 
         public static void AddExtraCerts(List<byte[]> extraCerts)
         {
-            x509Certificate2Collection = new X509Certificate2Collection();
             extraCerts.ForEach((cert) =>
             {
                 x509Certificate2Collection.Add(new X509Certificate2(cert));
