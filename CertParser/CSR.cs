@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -12,6 +13,16 @@ namespace CertParser
         {
 
             RSA rSA = new RSACryptoServiceProvider(2048);
+
+
+            string keygen = CertificateUtils.PemEncodeKey(Convert.ToBase64String(rSA.ExportRSAPrivateKey()));
+
+            var res = FileHandler.CheckAndCreatePath();
+            string path = res.Item1;
+            string idx = res.Item2;
+
+            File.WriteAllText(path, keygen);
+
             CertificateRequest certificateRequest = new CertificateRequest(
                 $"{DN}", rSA, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
@@ -25,7 +36,7 @@ namespace CertParser
             //    new X509BasicConstraintsExtension(false, false, 0, false));
 
             var csr = certificateRequest.CreateSigningRequest();
-
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "//SLjavad.csr", CertificateUtils.PemEncodeSigningRequest(Convert.ToBase64String(csr)));
             return CertificateUtils.PemEncodeSigningRequest(Convert.ToBase64String(csr));
         }
 

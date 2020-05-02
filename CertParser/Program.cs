@@ -129,8 +129,8 @@ namespace CertParser
                         {
                             string DN = CSR.RequestCertificate();
                             string CSRstring = CSR.CreateCSR(DN);
-                            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "//csr.csr", CSRstring);
-                            Console.WriteLine($"CSR Created! at : {AppDomain.CurrentDomain.BaseDirectory + "\csr.csr"}");
+                            
+                            Console.WriteLine($"CSR Created! at : {AppDomain.CurrentDomain.BaseDirectory + "\\SLjavad.csr"}");
                             InitialPrintOut(true);
                             break;
                         }
@@ -139,6 +139,9 @@ namespace CertParser
                             ParseCert();
                             break;
                         }
+                    case ConsoleKey.C:
+                        Console.Clear();
+                        break;
                     default:
                         InitialPrintOut(true);
                         break;
