@@ -18,39 +18,45 @@ namespace CertParser
             return certList;
         }
         
-        public static string GetLastFolderName(string directory)
+        public static int GetLastFolderNameIndex(string directory)
         {
             var directories = Directory.GetDirectories(directory);
             if (directories.Length == 0)
             {
-                return "0";
+                return 0;
             }
             string lastName = string.Empty;
             int tmp = 0;
             for (int i = 0; i < directories.Length; i++)
             {
-                string name = Path.GetDirectoryName(directories[i]);
+                string name = new DirectoryInfo(directories[i]).Name;
+                int index = int.Parse(name.Split("_")[1]);
+                if (index > tmp)
+                {
+                    tmp = index;
+                }
             }
-            return null;
+            return tmp;
         }
 
         public static (string,string) CheckAndCreatePath()
         {
             string path = AppDomain.CurrentDomain.BaseDirectory + "\\CSRs";
-            new FileInfo(path).Directory.Create();
-            var lastItem = GetLastFolderName(path);
+            new DirectoryInfo(path).Create();
+            var lastItem = GetLastFolderNameIndex(path);
 
-            if (lastItem == "0")
+            if (lastItem == 0)
             {
                 path += "\\CSR_1";
             }
             else
             {
-                path += $"\\CSR_{(int.Parse(lastItem) + 1)}";
+                path += $"\\CSR_{(lastItem + 1)}";
             }
-            new FileInfo(path).Directory.Create();
+            new DirectoryInfo(path).Create();
+            //new FileInfo(path).Directory.Create();
 
-            return (path , (int.Parse(lastItem) + 1).ToString());
+            return (path , (lastItem + 1).ToString());
         }
     }
 }

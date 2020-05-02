@@ -128,9 +128,9 @@ namespace CertParser
                     case ConsoleKey.R:
                         {
                             string DN = CSR.RequestCertificate();
-                            string CSRstring = CSR.CreateCSR(DN);
+                            var res = CSR.CreateCSR(DN);
                             
-                            Console.WriteLine($"CSR Created! at : {AppDomain.CurrentDomain.BaseDirectory + "\\SLjavad.csr"}");
+                            Console.WriteLine($"CSR Created! at : {res.Item2}");
                             InitialPrintOut(true);
                             break;
                         }

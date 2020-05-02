@@ -9,7 +9,7 @@ namespace CertParser
 {
     public class CSR
     {
-        public static string CreateCSR(string DN)
+        public static (string , string) CreateCSR(string DN)
         {
 
             RSA rSA = new RSACryptoServiceProvider(2048);
@@ -21,7 +21,7 @@ namespace CertParser
             string path = res.Item1;
             string idx = res.Item2;
 
-            File.WriteAllText(path, keygen);
+            File.WriteAllText(path + $"\\SLjavad_{idx}.key", keygen);
 
             CertificateRequest certificateRequest = new CertificateRequest(
                 $"{DN}", rSA, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
@@ -36,8 +36,8 @@ namespace CertParser
             //    new X509BasicConstraintsExtension(false, false, 0, false));
 
             var csr = certificateRequest.CreateSigningRequest();
-            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "//SLjavad.csr", CertificateUtils.PemEncodeSigningRequest(Convert.ToBase64String(csr)));
-            return CertificateUtils.PemEncodeSigningRequest(Convert.ToBase64String(csr));
+            File.WriteAllText(path + $"\\SLjavad_{idx}.csr", CertificateUtils.PemEncodeSigningRequest(Convert.ToBase64String(csr)));
+            return (CertificateUtils.PemEncodeSigningRequest(Convert.ToBase64String(csr)) , (path + $"\\SLjavad_{idx}.csr"));
         }
 
         public static string RequestCertificate()
