@@ -15,6 +15,8 @@ namespace CertParser
             Console.WriteLine("==========================================");
             Console.WriteLine("Press 'R' To Create CSR ");
             Console.WriteLine("Press 'P' To Parse a Certificate ");
+            Console.WriteLine("Press 'S' To Sign a CSR ");
+
             if (clear)
             {
                 Console.WriteLine("Press 'C' to Clear Console");
@@ -81,8 +83,6 @@ namespace CertParser
                 {
                     var key = Console.ReadKey();
                     Console.Clear();
-                    //Console.WriteLine();
-                    //Console.WriteLine("===================================");
                     switch (key.Key)
                     {
                         case ConsoleKey.P:
@@ -112,6 +112,24 @@ namespace CertParser
             Console.ReadKey();
         }
 
+        private static void CertSign()
+        {
+            Console.Clear();
+            Console.WriteLine("Please Enter CSR File Path , your CA cert , your CA Key");
+            
+            Console.Write("CSR File Path : ");
+            var csrPath = GetCleanPath();
+
+            Console.Write("Your CA Cert Path : ");
+            var caCertPath = GetCleanPath();
+
+            Console.Write("Your CA Key : ");
+            var caKey = GetCleanPath();
+
+            CertificateSigner.SignCSR(csrPath , caCertPath , caKey);
+
+            
+        }
 
 
         static void Main(string[] args)
@@ -129,7 +147,6 @@ namespace CertParser
                         {
                             string DN = CSR.RequestCertificate();
                             var res = CSR.CreateCSR(DN);
-                            
                             Console.WriteLine($"CSR Created! at : {res.Item2}");
                             InitialPrintOut(true);
                             break;
@@ -137,6 +154,11 @@ namespace CertParser
                     case ConsoleKey.P:
                         {
                             ParseCert();
+                            break;
+                        }
+                    case ConsoleKey.S:
+                        {
+                            CertSign();
                             break;
                         }
                     case ConsoleKey.C:

@@ -17,7 +17,7 @@ namespace CertParser
 
             string keygen = CertificateUtils.PemEncodeKey(Convert.ToBase64String(rSA.ExportRSAPrivateKey()));
 
-            var res = FileHandler.CheckAndCreatePath();
+            var res = FileHandler.CheckAndCreatePath("CSRs", "CSR");
             string path = res.Item1;
             string idx = res.Item2;
 
@@ -26,14 +26,14 @@ namespace CertParser
             CertificateRequest certificateRequest = new CertificateRequest(
                 $"{DN}", rSA, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
-            //certificateRequest.CertificateExtensions.Add(
-            //    new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, false));
+            certificateRequest.CertificateExtensions.Add(
+                new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, false));
 
-            //certificateRequest.CertificateExtensions.Add(
-            //    new X509SubjectKeyIdentifierExtension(certificateRequest.PublicKey, false));
+            certificateRequest.CertificateExtensions.Add(
+                new X509SubjectKeyIdentifierExtension(certificateRequest.PublicKey, false));
 
-            //certificateRequest.CertificateExtensions.Add(
-            //    new X509BasicConstraintsExtension(false, false, 0, false));
+            certificateRequest.CertificateExtensions.Add(
+                new X509BasicConstraintsExtension(true, false, 0, false));
 
             var csr = certificateRequest.CreateSigningRequest();
             File.WriteAllText(path + $"\\SLjavad_{idx}.csr", CertificateUtils.PemEncodeSigningRequest(Convert.ToBase64String(csr)));
