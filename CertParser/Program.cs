@@ -28,6 +28,7 @@ namespace CertParser
             Console.WriteLine("===================================");
             Console.WriteLine("Press 'P' to print cert");
             Console.WriteLine("Press 'E' to Evaluate cert");
+            Console.WriteLine("Press 'M' to Back to main menu");
             if (clear)
             {
                 Console.WriteLine("Press 'C' to Clear Console");
@@ -76,11 +77,16 @@ namespace CertParser
                     string extAddr = GetCleanPath();
                     CertificateParser.AddExtraCerts(FileHandler.GetExtraCertRawData(extAddr));
                 }
-
-                ParsePrintOut(false);
-
-                while (true)
+               
+                bool running = true;
+                while (running)
                 {
+                    if (!running)
+                    {
+                        break;
+                    }
+
+                    ParsePrintOut(true);
                     var key = Console.ReadKey();
                     Console.Clear();
                     switch (key.Key)
@@ -92,6 +98,9 @@ namespace CertParser
                             Console.WriteLine();
                             Console.WriteLine(CertificateParser.Validate());
                             break;
+                        case ConsoleKey.M:
+                            running = false;
+                            break;
                         case ConsoleKey.C:
                             Console.Clear();
                             break;
@@ -99,17 +108,12 @@ namespace CertParser
                             ParsePrintOut(true);
                             break;
                     }
-
-                    ParsePrintOut(true);
-
                 }
             }
             else
             {
                 Console.WriteLine("Certificate Load Falied :(");
             }
-
-            Console.ReadKey();
         }
 
         private static void CertSign()
@@ -136,10 +140,10 @@ namespace CertParser
         {
 
             Console.WriteLine("Welcome To Certificate Parser V1 :D");
-            InitialPrintOut(false);
 
             while (true)
             {
+                InitialPrintOut(true);
                 var input = Console.ReadKey();
                 switch (input.Key)
                 {
@@ -148,7 +152,6 @@ namespace CertParser
                             string DN = CSR.RequestCertificate();
                             var res = CSR.CreateCSR(DN);
                             Console.WriteLine($"CSR Created! at : {res.Item2}");
-                            InitialPrintOut(true);
                             break;
                         }
                     case ConsoleKey.P:
@@ -165,7 +168,6 @@ namespace CertParser
                         Console.Clear();
                         break;
                     default:
-                        InitialPrintOut(true);
                         break;
                 }
 
