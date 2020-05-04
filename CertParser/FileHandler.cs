@@ -13,11 +13,15 @@ namespace CertParser
             List<byte[]> certList = new List<byte[]>();
             for (int i = 0; i < files.Length; i++)
             {
-                certList.Add(File.ReadAllBytes(files[i]));
+                var ext = new FileInfo(files[i]).Extension;
+                if (ext == ".crt" || ext == ".cer")
+                {
+                    certList.Add(File.ReadAllBytes(files[i]));
+                }
             }
             return certList;
         }
-        
+
         public static int GetLastFolderNameIndex(string directory)
         {
             var directories = Directory.GetDirectories(directory);
@@ -40,7 +44,7 @@ namespace CertParser
             return tmp;
         }
 
-        public static (string,string) CheckAndCreatePath(string baseFolderName , string subfolderName)
+        public static (string, string) CheckAndCreatePath(string baseFolderName, string subfolderName)
         {
             string path = AppDomain.CurrentDomain.BaseDirectory + $@"\{baseFolderName}";
             new DirectoryInfo(path).Create();
@@ -57,7 +61,7 @@ namespace CertParser
             new DirectoryInfo(path).Create();
             //new FileInfo(path).Directory.Create();
 
-            return (path , (lastItem + 1).ToString());
+            return (path, (lastItem + 1).ToString());
         }
     }
 }
