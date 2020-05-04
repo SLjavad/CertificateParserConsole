@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -80,6 +81,31 @@ namespace CertParser
                 }
                 return result;
             }
+        }
+
+        public static string FingerPrintCheck(X509Certificate2 certificate1 , X509Certificate2 certificate2)
+        {
+            //var finger1 = certificate1.Thumbprint;
+            //var finger2 = certificate2.Thumbprint;
+
+            var fr1_sha256 = certificate1.GetCertHashString(HashAlgorithmName.SHA256);
+            var fr2_sha256 = certificate2.GetCertHashString(HashAlgorithmName.SHA256);
+
+            var fr1_sha1 = certificate1.GetCertHashString(HashAlgorithmName.SHA1);
+            var fr2_sha1 = certificate2.GetCertHashString(HashAlgorithmName.SHA1);
+
+            var fr1_md5 = certificate1.GetCertHashString(HashAlgorithmName.MD5);
+            var fr2_md5 = certificate2.GetCertHashString(HashAlgorithmName.MD5);
+
+            string result = $"Computed Fingerprints : \n\nfirst certificate sha256: {fr1_sha256}\n" +
+                $"second certificate sha256: {fr2_sha256}\n\n" +
+                $"first certificate sha1: {fr1_sha1}\n" +
+                $"second certificate sha1: {fr2_sha1}\n\n" +
+                $"first certificate md5: {fr1_md5}\n" +
+                $"second certificate md5: {fr2_md5}";
+
+
+            return result;
         }
     }
 }

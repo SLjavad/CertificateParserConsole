@@ -16,6 +16,7 @@ namespace CertParser
             Console.WriteLine("Press 'R' To Create CSR ");
             Console.WriteLine("Press 'P' To Parse a Certificate ");
             Console.WriteLine("Press 'S' To Sign a CSR ");
+            Console.WriteLine("Press 'V' To Validate Two FingerPrint of Two Certificates");
 
             if (clear)
             {
@@ -131,8 +132,20 @@ namespace CertParser
             var caKey = GetCleanPath();
 
             CertificateSigner.SignCSR(csrPath , caCertPath , caKey);
+        }
 
-            
+        private static string ValidateTwoFinger()
+        {
+            Console.Clear();
+            Console.WriteLine("Please Enter Address of two Certificates :");
+
+            Console.Write("First Certificate File Path : ");
+            var cert1 = GetCleanPath();
+
+            Console.Write("Second Certificate File Path : ");
+            var cert2 = GetCleanPath();
+
+            return CertificateParser.FingerPrintCheck(new X509Certificate2(cert1), new X509Certificate2(cert2));
         }
 
 
@@ -162,6 +175,11 @@ namespace CertParser
                     case ConsoleKey.S:
                         {
                             CertSign();
+                            break;
+                        }
+                    case ConsoleKey.V:
+                        {
+                            Console.WriteLine(ValidateTwoFinger());
                             break;
                         }
                     case ConsoleKey.C:
