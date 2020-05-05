@@ -24,7 +24,7 @@ namespace CertParser
             return Convert.FromBase64String(base64);
         }
 
-        public static void SignCSR(string csrPath , string myCertPath , string myCertKeyPath)
+        public static void SignCSR(string csrPath, string myCertPath, string myCertKeyPath)
         {
 
             var csrFilename = new FileInfo(csrPath).Name;
@@ -45,24 +45,23 @@ namespace CertParser
         private static void RunCmd(string command)
         {
             Process cmd = new Process();
-            
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 cmd.StartInfo.FileName = "cmd.exe";
                 cmd.StartInfo.Arguments = $"/C {command}";
             }
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 command = command.Replace("\"", "\\\"");
                 cmd.StartInfo.FileName = "/bin/bash";
                 cmd.StartInfo.Arguments = $"-c \"{command}\"";
             }
-            
+
             cmd.StartInfo.RedirectStandardOutput = true;
             cmd.StartInfo.UseShellExecute = false;
             cmd.StartInfo.CreateNoWindow = true;
-            
+
             cmd.Start();
 
             Console.WriteLine(cmd.StandardOutput.ReadToEnd());
