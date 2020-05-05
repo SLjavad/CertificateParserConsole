@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace CertParser
 {
@@ -44,12 +45,24 @@ namespace CertParser
         private static void RunCmd(string command)
         {
             Process cmd = new Process();
+            
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                cmd.StartInfo.FileName = "cmd.exe";
+                cmd.StartInfo.Arguments = $"/C {command}";
+            }
 
-            cmd.StartInfo.FileName = "cmd.exe";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                command = command.Replace("\"", "\\\"");
+                cmd.StartInfo.FileName = "/bin/bash";
+                cmd.StartInfo.Arguments = $"-c \"{command}\"";
+            }
+            
             cmd.StartInfo.RedirectStandardOutput = true;
             cmd.StartInfo.UseShellExecute = false;
             cmd.StartInfo.CreateNoWindow = true;
-            cmd.StartInfo.Arguments = $"/C {command}"; 
+            
             cmd.Start();
 
             Console.WriteLine(cmd.StandardOutput.ReadToEnd());

@@ -148,7 +148,6 @@ namespace CertParser
 
         static void Main(string[] args)
         {
-
             Console.WriteLine("Welcome To Certificate Parser V1 :D");
 
             while (true)
