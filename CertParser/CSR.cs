@@ -26,13 +26,14 @@ namespace CertParser
                 $"{DN}", rSA, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
             certificateRequest.CertificateExtensions.Add(
-                new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, false));
+                new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature | X509KeyUsageFlags.KeyCertSign, false));
 
             certificateRequest.CertificateExtensions.Add(
                 new X509SubjectKeyIdentifierExtension(certificateRequest.PublicKey, false));
 
             certificateRequest.CertificateExtensions.Add(
-                new X509BasicConstraintsExtension(true, false, 0, false));
+                new X509BasicConstraintsExtension(true, false, 0, true));
+
 
             var csr = certificateRequest.CreateSigningRequest();
             File.WriteAllText(path + $"\\SLjavad_{idx}.csr", CertificateUtils.PemEncodeSigningRequest(Convert.ToBase64String(csr)));
